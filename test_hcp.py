@@ -93,7 +93,8 @@ class TestClass:
 			return var0, var1, var2, var3
 			
 			
-			
+		# Purpose: Simple, fake data set to test convergence of values
+		#          is identical in matlab and python
 		def test_1(self):
 			# Execute Python Code on Test Data
 			F = np.array([[1,1,1,1],[2,2,2,2],[3,3,3,3]])
@@ -127,7 +128,7 @@ class TestClass:
 				   and python_converging_value_lower_bound <= matlab_converging_value[99]
 			
 			
-			
+		# Purpose: Test NaN value in Y matrix, ensure error is thrown
 		def test_2(self):
 			# Execute Python Code on Test Data
 			nan = float('NaN')
@@ -145,4 +146,76 @@ class TestClass:
 				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
 			assert excinfo.value.message == 'NaN present in Y matrix.'
 			
-		
+		# Purpose: Test NaN value in F matrix, ensure error is thrown
+		def test_3(self):
+			# Execute Python Code on Test Data
+			nan = float('NaN')
+			F = np.array([[1,1,1,1],[2,2,nan,2],[3,3,3,3]])
+			Y = np.array([[4,4,4,4],[5,5,5,5],[6,6,6,6]])
+			
+			k = 2	
+			lam1 = 1
+			lam2 = 2
+			lam3 = 1
+			
+			iterations = 100
+			
+			with pytest.raises(AssertionError) as excinfo:
+				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
+			assert excinfo.value.message == 'NaN present in F matrix.'
+			
+		# Purpose: F and Y with different rows, ensure error is thrown	
+		def test_4(self):
+			# Execute Python Code on Test Data
+			F = np.array([[1,1,1,1],[2,2,2,2],[3,3,3,3]])
+			Y = np.array([[4,4,4,4],[5,5,5,5]])
+			
+			k = 2	
+			lam1 = 1
+			lam2 = 2
+			lam3 = 1
+			
+			iterations = 100
+			
+			with pytest.raises(AssertionError) as excinfo:
+				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
+			assert excinfo.value.message == 'Number of rows in F and Y must agree.'	
+			
+		# Purpose: Test NaN value in F matrix, ensure error is thrown
+		def test_5(self):
+			# Execute Python Code on Test Data
+			F = np.array([[1,1,1,1],[2,2,2,2],[3,3,3,3]])
+			Y = np.array([[4,4,4,4],[5,5,5,5],[6,6,6,6]])
+			
+			k = 0	
+			lam1 = 1
+			lam2 = 2
+			lam3 = 1
+			
+			iterations = 100
+			
+			with pytest.raises(AssertionError) as excinfo:
+				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
+			assert excinfo.value.message == 'h must be a positive integer.'	
+			
+			k = 2
+			lam1 = 0
+			
+			with pytest.raises(AssertionError) as excinfo:
+				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
+			assert excinfo.value.message == 'l1 must be positive.'			
+			
+			lam1 = 1
+			lam2 = 0
+
+			with pytest.raises(AssertionError) as excinfo:
+				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
+			assert excinfo.value.message == 'l2 must be positive.'	
+			
+			lam2 = 2
+			lam3 = 0	
+			
+			with pytest.raises(AssertionError) as excinfo:
+				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
+			assert excinfo.value.message == 'l3 must be positive.'	
+							

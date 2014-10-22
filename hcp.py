@@ -38,10 +38,11 @@ def hcp(F,Y,h,l1,l2,l3,iters):
 
     yRows = Y.shape[0]   # Number of rows in Y 
     
-    assert(fRows == yRows), "Number of rows in F and Y must agree."
-    
-    if (h<1 or l1<1e-6 or l2<1e-6 or l3<1e-6 ):
-        print 'l1, l2, l3 must be positive and/or h must be an integer.';
+    assert (fRows == yRows), "Number of rows in F and Y must agree."    
+    assert (h >= 1), "h must be a positive integer."
+    assert (l1 >= 1e-6), "l1 must be positive."
+    assert (l2 >= 1e-6), "l2 must be positive."
+    assert (l3 >= 1e-6), "l3 must be positive."
     
     for ii in range(iters):
         
