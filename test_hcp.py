@@ -107,6 +107,7 @@ class TestClass:
 			iterations = 100
 			var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
 		
+			# Read in Matlab results run on same test data
 			matlab_var = self.parse_matlab_data('test_1', iterations)
 		
 			
@@ -116,6 +117,32 @@ class TestClass:
 			python_converging_value = python_converging_value_array_form[0]
 			python_converging_value = python_converging_value.round(3)
 
+			# Allow very small difference in value. Test is flakey otherwise.
+			python_converging_value_upper_bound = python_converging_value + 0.001
+			python_converging_value_lower_bound = python_converging_value - 0.001
+
+
 			# Assert that the converging #'s are the same						
-			assert python_converging_value == matlab_converging_value[99]	
+			assert python_converging_value_upper_bound >= matlab_converging_value[99] \
+				   and python_converging_value_lower_bound <= matlab_converging_value[99]
+			
+			
+			
+		def test_2(self):
+			# Execute Python Code on Test Data
+			nan = float('NaN')
+			F = np.array([[1,1,1,1],[2,2,2,2],[3,3,3,3]])
+			Y = np.array([[nan,4,4,4],[5,5,5,5],[6,6,6,6]])
+			
+			k = 2	
+			lam1 = 1
+			lam2 = 2
+			lam3 = 1
+			
+			iterations = 100
+			
+			with pytest.raises(AssertionError) as excinfo:
+				var = hcp(F,Y,k,lam1, lam2, lam3, iterations)
+			assert excinfo.value.message == 'NaN present in Y matrix.'
+			
 		

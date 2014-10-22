@@ -3,6 +3,13 @@ from numpy.linalg import norm,inv,lstsq
 from numpy import matlib
 
 def hcp(F,Y,h,l1,l2,l3,iters):
+    
+    # Check that there are no NaN values in input matrices F and Y
+    f_nan_check = np.isnan(F)
+    y_nan_check = np.isnan(Y)
+    
+    assert np.any(f_nan_check) != True, "NaN present in F matrix."
+    assert np.any(y_nan_check) != True, "NaN present in Y matrix."
 
     if iters == None:
         iter = 100
